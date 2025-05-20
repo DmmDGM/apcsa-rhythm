@@ -41,9 +41,16 @@ async function setScene(name: string): Promise<void> {
     if(typeof cached === "undefined") {
         try {
             const scenePath = nodePath.resolve(project.root, `./scenes/${name}`);
-            const imported = await import(scenePath) as Scene;
-            scenes.set(name, scene);
-            scene = imported;
+            const imported = await import(scenePath) as Partial<Scene>;
+            const resolved = Object.assign({
+                init: () => {},
+                update: () => {},
+                draw: () => {},
+                key: () => {},
+                fix: () => {}
+            }, imported) as Scene;
+            scenes.set(name, resolved);
+            scene = resolved;
         }
         catch {
             throw new except.UnknownScene();
