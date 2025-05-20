@@ -1,0 +1,15 @@
+{
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "module": "index.ts",
+    "name": "apcsa-rhythm",
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "chalk": "^5.4.1"
+    }
+}
