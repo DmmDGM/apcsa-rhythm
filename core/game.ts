@@ -87,3 +87,5 @@ async function tick(lastTick: number): Promise<void> {
 }
 await setScene("init");
 setTimeout(() => tick(startTick), 1000 / fps);
+process.stdin.setRawMode(true);
+process.stdin.on("data", (data) => scene.key(context, data));
