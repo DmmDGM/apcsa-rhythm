@@ -1,13 +1,15 @@
-// Imports
-import chalk from "chalk";
-import * as except from "./except";
-
 // Defines render size
 export const renderWidth = 128;
-export const renderHeight = 32;
+export const renderHeight = 24;
 
 // Defines clear methods
-export async function clearDown(): Promise<void> {
+export async function clearDown(rows: number): Promise<void> {
+    // Writes to terminal
+    await Bun.stdout.write(`\x1b[${rows};1H`);
+    await Bun.stdout.write("\x1b[0J");
+}
+export async function clearHere(): Promise<void> {
+    // Writes to terminal
     await Bun.stdout.write("\x1b[0J");
 }
 export async function clearLine(rows: number): Promise<void> {
@@ -17,23 +19,63 @@ export async function clearLine(rows: number): Promise<void> {
 }
 export async function clearScreen(): Promise<void> {
     // Writes to terminal
-    await Bun.stdout.write("\x1b[1;1H");
+    await Bun.stdout.write(`\x1b[1;1H`);
     await Bun.stdout.write("\x1b[0J");
+}
+export async function clearUp(rows: number): Promise<void> {
+    // Writes to terminal
+    await Bun.stdout.write(`\x1b[${rows};1H`);
+    await Bun.stdout.write("\x1b[1J");
 }
 
 // Defines write methods
 export async function writeCenter(rows: number, text: string): Promise<void> {
     // Writes to terminal
-    await Bun.stdout.write(`\x1b[${rows};1H`);
     const textWidth = Bun.stringWidth(text);
-    const leftWidth = Math.floor((renderWidth - textWidth) / 2);
-    const rightWidth = renderWidth - leftWidth - textWidth;
-    await Bun.stdout.write(" ".repeat(leftWidth) + text + " ".repeat(rightWidth));
+    const columns = Math.floor((renderWidth - textWidth) / 2) + 1;
+    await Bun.stdout.write(`\x1b[${rows};${columns}H`);
+    await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`);
+}
+export async function writeHere(text: string): Promise<void> {
+    // Writes to terminal
+    await Bun.stdout.write(text);
+}
+export async function writeJustify(
+    rows: number,
+    leftText: string,
+    centerText: string,
+    rightText: string
+): Promise<void> {
+    // Writes to terminal
+    const leftWidth = Bun.stringWidth(leftText);
+    await Bun.stdout.write(`\x1b[${rows};1H`);
+    await Bun.stdout.write(`${leftText}\x1b[0K`);
+    const rightWidth = Bun.stringWidth(rightText);
+    const rightColumns = renderWidth - rightWidth + 1;
+    await Bun.stdout.write(`\x1b[${rows};${rightColumns}H`);
+    await Bun.stdout.write(rightText);
+    const centerWidth = Bun.stringWidth(centerText);
+    const centerColumns = Math.floor((renderWidth - centerWidth) / 2) + 1;
+    await Bun.stdout.write(`\x1b[${rows};${centerColumns}H`);
+    await Bun.stdout.write(centerText);
 }
 export async function writeLine(rows: number, columns: number, text: string): Promise<void> {
     // Writes to terminal
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
-    await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`)
+    await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`);
+}
+export async function writeLeft(rows: number, text: string): Promise<void> {
+    // Writes to terminal
+    await Bun.stdout.write(`\x1b[${rows};1H`);
+    await Bun.stdout.write(`${text}\x1b[0K`);
+}
+export async function writeRight(rows: number, text: string): Promise<void> {
+    // Writes to terminal
+    // Writes to terminal
+    const textWidth = Bun.stringWidth(text);
+    const columns = renderWidth - textWidth + 1;
+    await Bun.stdout.write(`\x1b[${rows};${columns}H`);
+    await Bun.stdout.write(`\x1b[1K${text}`);
 }
 export async function writeText(rows: number, columns: number, text: string): Promise<void> {
     // Writes to terminal

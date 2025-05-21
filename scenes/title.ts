@@ -1,6 +1,6 @@
 // Imports
 import chalk from "chalk"
-import type * as game from "../core/game";
+import type * as game from "../core/engine";
 import * as render from "../core/render";
 
 // Defines scene
