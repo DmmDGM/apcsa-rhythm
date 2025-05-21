@@ -2,9 +2,10 @@
 import nodePath from "node:path";
 import * as except from "./except";
 import * as project from "./project";
+import * as render from "./render";
 
 // Defines fps handlers
-let fps: number = 60;
+let fps: number = 10;
 function getFps(): number {
     // Returns fps
     return fps;
@@ -83,9 +84,13 @@ async function tick(lastTick: number): Promise<void> {
         if(thrown instanceof except.Exception) await scene.fix(context, thrown);
         else throw (thrown instanceof Error) ? thrown : new Error(String(thrown));
     }
+    frames++;
     setTimeout(() => tick(thisTick), 1000 / fps);
 }
 await setScene("init");
 setTimeout(() => tick(startTick), 1000 / fps);
 process.stdin.setRawMode(true);
-process.stdin.on("data", (data) => scene.key(context, data));
+process.stdin.on("data", (data) => {
+    if(data.toString() === "\x1b\x51") process.exit(0);
+    scene.key(context, data);
+});
