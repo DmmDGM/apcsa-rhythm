@@ -30,7 +30,7 @@ class Game {
         const buildLane = (channel: Channel) => {
             const borderVertical = chalk.bgCyanBright("  ");
             const 
-            // "|| J | 92 ||"  
+            // "J || 92 ||"  
     }
     clickMissed(): boolean {
         // Clicks and removes missed
