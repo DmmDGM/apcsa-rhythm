@@ -4,40 +4,40 @@ export const renderHeight = 24;
 
 // Defines clear methods
 export async function clearDown(rows: number): Promise<void> {
-    // Writes to terminal
+    // Clears after position
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write("\x1b[0J");
 }
 export async function clearHere(): Promise<void> {
-    // Writes to terminal
+    // Clears here
     await Bun.stdout.write("\x1b[0J");
 }
 export async function clearLine(rows: number): Promise<void> {
-    // Writes to terminal
+    // Clears line
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write("\x1b[0K");
 }
 export async function clearScreen(): Promise<void> {
-    // Writes to terminal
+    // Clears screen
     await Bun.stdout.write(`\x1b[1;1H`);
     await Bun.stdout.write("\x1b[0J");
 }
 export async function clearUp(rows: number): Promise<void> {
-    // Writes to terminal
+    // Clears before position
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write("\x1b[1J");
 }
 
 // Defines write methods
 export async function writeCenter(rows: number, text: string): Promise<void> {
-    // Writes to terminal
+    // Writes center-aligned text
     const textWidth = Bun.stringWidth(text);
     const columns = Math.floor((renderWidth - textWidth) / 2) + 1;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`);
 }
 export async function writeHere(text: string): Promise<void> {
-    // Writes to terminal
+    // Writes text
     await Bun.stdout.write(text);
 }
 export async function writeJustify(
@@ -46,53 +46,55 @@ export async function writeJustify(
     centerText: string,
     rightText: string
 ): Promise<void> {
-    // Writes to terminal
-    const leftWidth = Bun.stringWidth(leftText);
+    // Writes left-aligned text
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write(`${leftText}\x1b[0K`);
+
+    // Writes right-aligned text
     const rightWidth = Bun.stringWidth(rightText);
     const rightColumns = renderWidth - rightWidth + 1;
     await Bun.stdout.write(`\x1b[${rows};${rightColumns}H`);
     await Bun.stdout.write(rightText);
+
+    // Writes center-aligned text
     const centerWidth = Bun.stringWidth(centerText);
     const centerColumns = Math.floor((renderWidth - centerWidth) / 2) + 1;
     await Bun.stdout.write(`\x1b[${rows};${centerColumns}H`);
     await Bun.stdout.write(centerText);
 }
 export async function writeLine(rows: number, columns: number, text: string): Promise<void> {
-    // Writes to terminal
+    // Writes line
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`);
 }
 export async function writeLeft(rows: number, text: string): Promise<void> {
-    // Writes to terminal
+    // Writes left-aligned text
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write(`${text}\x1b[0K`);
 }
 export async function writeRight(rows: number, text: string): Promise<void> {
-    // Writes to terminal
-    // Writes to terminal
+    // Writes right-aligned text
     const textWidth = Bun.stringWidth(text);
     const columns = renderWidth - textWidth + 1;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(`\x1b[1K${text}`);
 }
 export async function writeText(rows: number, columns: number, text: string): Promise<void> {
-    // Writes to terminal
+    // Writes at position
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(text);
 }
 
 // Defines cursor methods
 export async function cursorHide(): Promise<void> {
-    // Writes to terminal
+    // Hides cursor
     await Bun.stdout.write("\x1b[?25l");
 }
 export async function cursorMove(rows: number, columns: number): Promise<void> {
-    // Writes to terminal
+    // Moves cursor to position
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
 }
 export async function cursorShow(): Promise<void> {
-    // Writes to terminal
+    // Shows cursor
     await Bun.stdout.write("\x1b[?25h");
 }

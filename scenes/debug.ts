@@ -1,26 +1,30 @@
 // Imports
 import chalk from "chalk"
+import * as context from "../core/context";
 import * as engine from "../core/engine";
 import * as render from "../core/render";
 
-// Defines frame
-let lastDelta: number;
-let calculatedFps: number;
-
-// Defines terminal size
-let terminalHeight: number;
-let terminalWidth: number;
+// Defines statistics
+let lastDelta: number = 0;
+let calculatedFps: number = 0;
+let terminalHeight: number = 0;
+let terminalWidth: number = 0;
 
 // Defines scene
-export async function update(context: engine.Context, delta: number): Promise<void> {
-    // Calculates frame
+export async function init(): Promise<void> {
+    // Resets statistics
+    lastDelta = 0;
+    calculatedFps = 0;
+    terminalHeight = 0;
+    terminalWidth = 0;
+}
+export async function update(delta: number): Promise<void> {
+    // Calculates statistics
     lastDelta = delta;
     calculatedFps = 1000 / delta;
-
-    // Updates terminal size
     [ terminalWidth, terminalHeight ] = process.stdout.getWindowSize();
 }
-export async function draw(context: engine.Context): Promise<void> {
+export async function draw(): Promise<void> {
     // Renders title
     await render.writeLine(1, 56, "DEBUG MODE ENABLED");
     await render.clearLine(2);
@@ -41,10 +45,10 @@ export async function draw(context: engine.Context): Promise<void> {
     );
     await render.clearLine(9);
 
-    // Renders context
+    // Renders statistics
     await render.writeJustify(
         10,
-        `FPS: ${calculatedFps} / ${context.getFps()}`,
+        `FPS: ${calculatedFps} / ${engine.getFps()}`,
         "",
         `Delta: ${lastDelta} ms`
     );
@@ -55,10 +59,14 @@ export async function draw(context: engine.Context): Promise<void> {
         `Terminal size: ${terminalWidth}x${terminalHeight}`
     );
 
-    // Clears down
-    await render.clearDown(12);
+    // Clears lines
+    for(let i = 12; i < render.renderHeight; i++) await render.clearLine(i);
+
+    // Renders bottom
+    await render.writeCenter(render.renderHeight, "--- BOTTOM OF RENDER ---");
+    await render.clearHere();
 }
-export async function key(context: engine.Context): Promise<void> {
+export async function key(): Promise<void> {
     // Exits debug mode
     await context.setScene("init");
 }

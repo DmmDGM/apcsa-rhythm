@@ -1,23 +1,35 @@
 // Imports
-import type * as engine from "../core/engine";
+import * as context from "../core/context";
 import * as render from "../core/render";
 
+// Defines check
+let terminalHeight: number = 0;
+let terminalWidth: number = 0;
+let pass: boolean = false;
+
 // Defines scene
-export async function init(context: engine.Context): Promise<void> {
-    // Initializes terminal
-    await render.clearScreen();
-    await render.cursorHide();
+export async function init(): Promise<void> {
+    // Resets check
+    terminalHeight = 0;
+    terminalWidth = 0;
+    pass = false;
 }
-export async function update(context: engine.Context): Promise<void> {
-    const [ columns, rows ] = process.stdout.getWindowSize();
-    if(columns < render.renderWidth || rows < render.renderHeight) {
-        await render.writeLine(1, 1, "Terminal is too small!");
-        await render.writeLine(2, 1, `Minimum size: ${render.renderWidth}x${render.renderHeight}`);
-        await render.writeLine(3, 1, `Current size: ${columns}x${rows}`);
-        await render.clearLine(4);
-        await render.writeLine(5, 1, "The game will automatically start when the size requirement is met.");
-        await render.writeLine(6, 1, "Note: Please try to refrain from resizing your terminal during the game.");
-        await render.writeLine(7, 1,  `${context.getFrames() % 15}`);
-        await render.clearHere();
-    }
+export async function update(): Promise<void> {
+    // Tests terminal size
+    [ terminalWidth, terminalHeight ] = process.stdout.getWindowSize();
+    pass = terminalWidth >= render.renderWidth && terminalHeight >= render.renderHeight;
+    if(pass) await context.setScene("title");
+}
+export async function draw(): Promise<void> {
+    // Displays warning
+    if(pass) return;
+    await render.writeCenter(1, "--- WARNING! ---");
+    await render.clearLine(2);
+    await render.writeCenter(3, "Your current terminal is too small to display this game!");
+    await render.writeCenter(4, `Minimum size: ${render.renderWidth}x${render.renderHeight}`);
+    await render.writeCenter(5, `Current size: ${terminalWidth}x${terminalHeight}`);
+    await render.clearLine(6);
+    await render.writeCenter(7, "Resizing during gameplay may result in corrupt rendering.");
+    await render.writeCenter(8, "The game will proceed once the minimum terminal size is met.");
+    await render.clearHere();
 }
