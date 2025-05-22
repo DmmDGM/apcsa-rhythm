@@ -50,9 +50,9 @@ export async function elapseFrame(): Promise<void> {
 }
 
 // Defines key handlers
-export async function emitKey(key: Buffer): Promise<void> {
+export async function emitKey(data: Buffer): Promise<void> {
     // Parses key
-    switch(key.toString()) {
+    switch(data.toString()) {
         case "\x1b\x44": {
             await context.setScene("debug");
             break;
@@ -62,7 +62,7 @@ export async function emitKey(key: Buffer): Promise<void> {
         }
         default: {
             const scene = context.getScene();
-            await scene.key(key);
+            await scene.key(data);
             break;
         }
     }
