@@ -27,9 +27,12 @@ class Game {
     buildBoard(): string[] {
         const borderHorizontal = chalk.bgCyanBright(" ".repeat(100));
         const labels: string[] = [ "S", "D", "F", "J", "K", "L" ];
-        const buildLane = (channel: Channel) => {
+        const buildTrack = (channel: Channel) => {
             const borderVertical = chalk.bgCyanBright("  ");
-            const 
+            const label = labels[channel]!;
+            const space = new Array(92).fill(" ");
+            space[12] = chalk.bgGreenBright(" ");
+            const track = 
             // "J || 92 ||"  
     }
     clickMissed(): boolean {
