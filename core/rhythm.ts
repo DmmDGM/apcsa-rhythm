@@ -147,3 +147,7 @@ export async function setChart(name: string): Promise<void> {
     const fetched = await fetchChart(name);
     chart = fetched;
 }
+export function changeChart(updated: Chart): void {
+    // Updates chart
+    chart = updated;
+}

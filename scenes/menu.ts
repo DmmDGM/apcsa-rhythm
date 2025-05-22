@@ -106,11 +106,11 @@ export async function key(data: Buffer): Promise<void> {
             index = Math.min(index + 10, charts.length - 1);
             break;
         }
-
-        // case " ": {
-        //     context.setTable(tables[index]!);
-        //     await context.setScene("game");
-        //     break;
-        // }
+        case " ": {
+            const chart = charts[index]!;
+            rhythm.changeChart(chart);
+            await context.setScene("game");
+            break;
+        }
     }
 }

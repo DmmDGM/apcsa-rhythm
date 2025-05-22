@@ -53,3 +53,8 @@ export async function setScene(name: string): Promise<void> {
     scene = fetched;
     await scene.init();
 }
+export async function changeScene(updated: Scene): Promise<void> {
+    // Updates scene
+    scene = updated;
+    await scene.init();
+}
