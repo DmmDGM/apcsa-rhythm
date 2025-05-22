@@ -1,6 +1,7 @@
 // Imports
 import chalk from "chalk";
 import * as context from "../core/context";
+import * as engine from "../core/engine";
 import * as render from "../core/render";
 
 // Defines title
@@ -20,15 +21,21 @@ let refresh: boolean = false;
 
 // Defines scene
 export async function init(): Promise<void> {
+    // Updates fps
+    engine.setFps(10);
+
     // Resets flags
     elapsed = 0;
     index = 0;
     refresh = false;
+
+    // Clears screen
+    await render.clearScreen();
 }
 export async function update(delta: number): Promise<void> {
     // Updates refresh
     const crosses = (time: number): boolean => elapsed < time && elapsed + delta >= time;
-    refresh = (elapsed === 0) || crosses(3000) || crosses(4000);
+    refresh = crosses(3000) || crosses(4000);
 
     // Updates elapsed
     elapsed += delta;
@@ -61,13 +68,15 @@ export async function draw(): Promise<void> {
 
     // Renders credits
     if(elapsed >= 6000) {
-        const style = elapsed % 1000 < 500 ? chalk.white : chalk.gray;
+        const blink = elapsed % 1000 < 500;
+        const style = blink ? chalk.white : chalk.gray;
         await render.writeCenter(title.length + 4, style("A game by Leo Deng"));
     }
 
     // Renders options
     if(elapsed >= 8000) {
-        const style = elapsed % 1000 < 500 ? chalk.yellowBright : chalk.cyanBright;
+        const blink = elapsed % 1000 < 500;
+        const style = blink ? chalk.yellowBright : chalk.cyanBright;
         await render.writeCenter(
             title.length + 8,
             index === 0 ? style("S T A R T") : "START"

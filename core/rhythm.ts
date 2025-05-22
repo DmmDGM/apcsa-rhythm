@@ -6,6 +6,7 @@ import * as project from "./project";
 
 // Defines structures
 export type Data = {
+    description: string;
     difficulty: number;
     name: string;
     table: number[][];
@@ -50,6 +51,7 @@ export class Lane {
 }
 export class Chart {
     // Declares fields
+    private readonly description: string;
     private readonly difficulty: number;
     private readonly lanes: Lane[];
     private readonly name: string;
@@ -58,6 +60,7 @@ export class Chart {
     // Defines constructor
     constructor(data: Data) {
         // Initializes fields
+        this.description = data.description;
         this.difficulty = data.difficulty;
         this.lanes = [];
         this.name = data.name;
@@ -73,6 +76,10 @@ export class Chart {
     }
 
     // Defines methods
+    getDescription(): string {
+        // Returns description
+        return this.description;
+    }
     getDifficulty(): number {
         // Returns difficulty
         return this.difficulty;
@@ -105,6 +112,7 @@ export async function fetchChart(name: string): Promise<Chart> {
         const chartPath = nodePath.resolve(project.root, `./charts/${name}`);
         const imported = await import(chartPath) as Data;
         const data = Object.assign({
+            description: "",
             difficulty: 0,
             name: "default",
             table: []
@@ -122,9 +130,11 @@ export async function fetchChart(name: string): Promise<Chart> {
 }
 export async function fetchAll(): Promise<Chart[]> {
     // Fetches charts
-    const dirpath = nodePath.resolve(project.root, `./chart/`);
+    const dirpath = nodePath.resolve(project.root, `./charts/`);
     const filepaths = await nodeFile.readdir(dirpath);
-    const fetched: Chart[] = await Promise.all(filepaths.map(async (filepath) => await fetchChart(filepath)));
+    const promises = filepaths.map(async (filepath) => await fetchChart(filepath));
+    const fetched: Chart[] = await Promise.all(promises);
+    fetched.sort((left, right) => left.getDifficulty() - right.getDifficulty());
     return fetched;
 }
 export function getChart(): Chart {

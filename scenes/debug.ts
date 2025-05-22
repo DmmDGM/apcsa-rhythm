@@ -12,11 +12,17 @@ let terminalWidth: number = 0;
 
 // Defines scene
 export async function init(): Promise<void> {
+    // Updates fps
+    engine.setFps(60);
+    
     // Resets statistics
     lastDelta = 0;
     calculatedFps = 0;
     terminalHeight = 0;
     terminalWidth = 0;
+
+    // Clears screen
+    await render.clearScreen();
 }
 export async function update(delta: number): Promise<void> {
     // Calculates statistics
@@ -48,7 +54,7 @@ export async function draw(): Promise<void> {
     // Renders statistics
     await render.writeJustify(
         10,
-        `FPS: ${calculatedFps} / ${engine.getFps()}`,
+        `FPS: ${calculatedFps.toFixed(3)} / ${engine.getFps()}`,
         "",
         `Delta: ${lastDelta} ms`
     );

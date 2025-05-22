@@ -1,5 +1,6 @@
 // Imports
 import * as context from "../core/context";
+import * as engine from "../core/engine";
 import * as render from "../core/render";
 
 // Defines check
@@ -9,10 +10,16 @@ let pass: boolean = false;
 
 // Defines scene
 export async function init(): Promise<void> {
+    // Updates fps
+    engine.setFps(10);
+    
     // Resets check
     terminalHeight = 0;
     terminalWidth = 0;
     pass = false;
+
+    // Clears screen
+    await render.clearScreen();
 }
 export async function update(): Promise<void> {
     // Tests terminal size

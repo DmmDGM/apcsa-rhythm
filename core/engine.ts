@@ -54,7 +54,6 @@ export async function emitKey(key: Buffer): Promise<void> {
     // Parses key
     switch(key.toString()) {
         case "\x1b\x44": {
-            setFps(10);
             await context.setScene("debug");
             break;
         }
