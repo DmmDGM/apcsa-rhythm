@@ -16,9 +16,6 @@ class Game {
 
     // Defines constructor
     constructor(chart: rhythm.Chart) {
-        // Updates fps
-        engine.setFps(30);
-
         // Initializes fields
         this.chart = chart;
         this.table = chart.getLanes().map((lane) => [ ...lane.getNotes() ]);
@@ -28,17 +25,87 @@ class Game {
 
     // Defines methods
     buildBoard(): string[] {
-        const borderHorizontal = chalk.bgCyanBright(" ".repeat(100));
+        // Defines borders
+        const borderHorizontal = chalk.bgWhite(" ".repeat(100));
+        const borderVertical = chalk.bgWhite("  ");
+        const borderVerticalThin = chalk.bgWhite(" ");
+
+        // Defines maps
         const labels: string[] = [ "S", "D", "F", "J", "K", "L" ];
+        const styles: typeof chalk[] = [
+            chalk.bgRedBright, chalk.bgYellowBright,
+            chalk.bgGreenBright, chalk.bgCyanBright,
+            chalk.bgBlueBright, chalk.bgMagentaBright
+        ];
+
+        // Builds board
         const buildTrack = (channel: Channel) => {
-            const borderVertical = chalk.bgCyanBright("  ");
+            // Maps channel
+            const lane = this.table[channel]!;
             const label = labels[channel]!;
-            const space = new Array(92).fill(" ");
-            space[12] = chalk.bgGreenBright(" ");
-            // const track = 
-            // "J || 92 ||"  
+            const style = styles[channel]!;
+
+            // Builds track
+            const spaces = new Array(92).fill(" ");
+            spaces[12] = chalk.greenBright("|");
+            for(let i = 0; i < lane.length; i++) {
+                const note = lane[i]!;
+                const delta = note.getTime() - this.elapsed;
+                if(delta > 2000) break;
+                const index = Math.floor(delta / 25) + 12;
+                spaces[index] = style(spaces[index]!);
+            }
+            const rail = spaces.join("");
+            
+            const track: string[] = channel < Channel.J ?
+                [
+                    `${borderVertical} ${label} ${borderVerticalThin}${rail}${borderVertical}`,
+                    `${borderVertical}   ${borderVerticalThin}${rail}${borderVertical}`
+                ] :
+                [ "  " + rail, label + " " + rail ];
+            return track;
         }
-        return [];
+        const board = [
+            borderHorizontal,
+            ...buildTrack(Channel.S),
+            borderHorizontal,
+            ...buildTrack(Channel.D),
+            borderHorizontal,
+            ...buildTrack(Channel.F),
+            borderHorizontal,
+            ...buildTrack(Channel.J),
+            borderHorizontal,
+            ...buildTrack(Channel.K),
+            borderHorizontal,
+            ...buildTrack(Channel.L),
+            borderHorizontal
+        ];
+        return board;
+
+        // Name: aaaaaa                                                          Time: 0:00 / 2:30
+        // FPS: 119.030                                                     Shift + [R]eset [Q]uit
+        // 
+        //                              Sample text sample text.
+        // "====================================================================================="
+        // "S ||     |    |                                                                    ||"
+        // "  ||     |    |                                                                    ||"
+        // "====================================================================================="
+        // "D ||     |       |                                                                 ||"  
+        // "  ||     |       |                                                                 ||"
+        // "====================================================================================="
+        // "F ||     |                                                                     |   ||"  
+        // "  ||     |                                                                     |   ||"
+        // "====================================================================================="
+        // "  ||     |       |                                                                 ||"  
+        // "J ||     |       |                                                                 ||"
+        // "====================================================================================="
+        // "  ||     |                                                                     |   ||"  
+        // "K ||     |                                                                     |   ||"
+        // "====================================================================================="
+        // "  ||     |                                                                     |   ||"  
+        // "L ||     |                                                                     |   ||"
+        // "====================================================================================="
+        //                                    Good (130 ms)
     }
     clickMissed(): boolean {
         // Clicks and removes missed
@@ -76,6 +143,9 @@ let calculatedFps = 0;
 
 // Defines scene
 export async function init(): Promise<void> {
+    // Updates fps
+    engine.setFps(120);
+
     // Clears screen
     await render.clearScreen();
 
@@ -87,8 +157,12 @@ export async function update(delta: number): Promise<void> {
     calculatedFps = 1000 / delta;
 }
 export async function draw(): Promise<void> {
-    await render.clearScreen();
+    // await render.clearScreen();
     await render.writeLeft(1, `${calculatedFps}`);
+    const board = new Game(rhythm.getChart()).buildBoard();
+    for(let i = 0; i < board.length; i++) {
+        await render.writeCenter(2 + i, board[i]!);
+    }
     // console.log(rhythm.getChart());
 }
 export async function key(data: Buffer): Promise<void> {

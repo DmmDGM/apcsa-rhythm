@@ -8,9 +8,33 @@ import * as project from "./project";
 export type Data = {
     description: string;
     difficulty: number;
+    length: number;
     name: string;
     table: number[][];
+    texts: [ number, string ][]
 };
+export class Text {
+    // Declares fields
+    private readonly content: string;
+    private readonly time: number;
+
+    // Defines constructor
+    constructor(time: number, content: string) {
+        // Initializes fields
+        this.content = content;
+        this.time = time;
+    }
+
+    // Defines methods
+    getContent(): string {
+        // Returns content
+        return this.content;
+    }
+    getTime(): number {
+        // Returns time
+        return this.time;
+    }
+}
 export class Note {
     // Declares fields
     private readonly time: number;
@@ -54,8 +78,10 @@ export class Chart {
     private readonly description: string;
     private readonly difficulty: number;
     private readonly lanes: Lane[];
+    private readonly length: number;
     private readonly name: string;
     private readonly notes: Note[];
+    private readonly texts: Text[];
 
     // Defines constructor
     constructor(data: Data) {
@@ -63,8 +89,10 @@ export class Chart {
         this.description = data.description;
         this.difficulty = data.difficulty;
         this.lanes = [];
+        this.length = data.length;
         this.name = data.name;
         this.notes = [];
+        this.texts = [];
 
         // Populates fields
         for(let i = 0; i < data.table.length; i++) {
@@ -73,6 +101,12 @@ export class Chart {
             this.notes.push(...lane.getNotes());
         }
         this.notes.sort((left, right) => left.getTime() - right.getTime());
+        for(let i = 0; i < data.texts.length; i++) {
+            const [ time, content ] = data.texts[i]!;            
+            const text = new Text(time, content);
+            this.texts.push(text);
+        }
+        this.texts.sort((left, right) => left.getTime() - right.getTime());
     }
 
     // Defines methods
@@ -96,6 +130,10 @@ export class Chart {
         // Returns notes
         return this.notes;
     }
+    getTexts(): readonly Text[] {
+        // Return texts
+        return this.texts;
+    }
 }
 
 // Defines handlers
@@ -114,8 +152,10 @@ export async function fetchChart(name: string): Promise<Chart> {
         const data = Object.assign({
             description: "",
             difficulty: 0,
+            length: 0,
             name: "default",
-            table: []
+            table: [],
+            texts: []
         }, imported) as Data;
         const chart = new Chart(data);
 
