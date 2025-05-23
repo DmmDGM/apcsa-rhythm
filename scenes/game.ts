@@ -12,6 +12,7 @@ class Game {
     private readonly chart: rhythm.Chart;
     private readonly table: rhythm.Note[][];
     private elapsed: number;
+     pressed: number;
     private score: number;
 
     // Defines constructor
@@ -20,22 +21,28 @@ class Game {
         this.chart = chart;
         this.table = chart.getLanes().map((lane) => [ ...lane.getNotes() ]);
         this.elapsed = 0;
+        this.pressed = 0;
         this.score = 0;
     }
 
     // Defines methods
     buildBoard(): string[] {
         // Defines borders
-        const borderHorizontal = chalk.bgWhite(" ".repeat(100));
-        const borderVertical = chalk.bgWhite("  ");
-        const borderVerticalThin = chalk.bgWhite(" ");
+        const horizontal = "═".repeat(100);
+        const vertical = "║";
+        const dash = "┆";
 
         // Defines maps
         const labels: string[] = [ "S", "D", "F", "J", "K", "L" ];
-        const styles: typeof chalk[] = [
+        const paints: typeof chalk[] = [
             chalk.bgRedBright, chalk.bgYellowBright,
             chalk.bgGreenBright, chalk.bgCyanBright,
             chalk.bgBlueBright, chalk.bgMagentaBright
+        ];
+        const styles: typeof chalk[] = [
+            chalk.redBright, chalk.yellowBright,
+            chalk.greenBright, chalk.cyanBright,
+            chalk.blueBright, chalk.magentaBright
         ];
 
         // Builds board
@@ -43,42 +50,42 @@ class Game {
             // Maps channel
             const lane = this.table[channel]!;
             const label = labels[channel]!;
+            const paint = paints[channel]!;
             const style = styles[channel]!;
 
             // Builds track
+            const button = (this.pressed & 1 << channel) === 0 ? paint("a") : style("a");
             const spaces = new Array(92).fill(" ");
-            spaces[12] = chalk.greenBright("|");
+            spaces[12] = dash;
             for(let i = 0; i < lane.length; i++) {
                 const note = lane[i]!;
                 const delta = note.getTime() - this.elapsed;
                 if(delta > 2000) break;
                 const index = Math.floor(delta / 25) + 12;
-                spaces[index] = style(spaces[index]!);
+                spaces[index] = paint(spaces[index]!);
             }
             const rail = spaces.join("");
-            
+            const lineLabeled = `${vertical}  ${button}  ${vertical}${rail}${vertical}`;
+            const lineUnabled = `${vertical}     ${vertical}${rail}${vertical}`;
             const track: string[] = channel < Channel.J ?
-                [
-                    `${borderVertical} ${label} ${borderVerticalThin}${rail}${borderVertical}`,
-                    `${borderVertical}   ${borderVerticalThin}${rail}${borderVertical}`
-                ] :
-                [ "  " + rail, label + " " + rail ];
+                [ lineLabeled, lineUnabled ] :
+                [ lineUnabled, lineLabeled ];
             return track;
         }
         const board = [
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.S),
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.D),
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.F),
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.J),
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.K),
-            borderHorizontal,
+            horizontal,
             ...buildTrack(Channel.L),
-            borderHorizontal
+            horizontal
         ];
         return board;
 
@@ -136,21 +143,35 @@ class Game {
         this.score += Math.round(1000 / Math.abs(delta));
         return true;
     }
+    press(channel: Channel): void {
+        // Presses button
+        this.pressed |= (1 << channel);
+    }
+    unpress(): void {
+        // Unpresses buttons
+        this.pressed = 0;
+    }
 }
 
 // Defines statistics
 let calculatedFps = 0;
 
+// Defines game
+let game: Game | null = null;
+
 // Defines scene
 export async function init(): Promise<void> {
     // Updates fps
-    engine.setFps(120);
+    engine.setFps(30);
 
     // Clears screen
     await render.clearScreen();
 
     // Resets statistics
     calculatedFps = 0;
+
+    // Resets game
+    game = new Game(rhythm.getChart());
 }
 export async function update(delta: number): Promise<void> {
     // Updates statistics
@@ -164,7 +185,15 @@ export async function draw(): Promise<void> {
         await render.writeCenter(2 + i, board[i]!);
     }
     // console.log(rhythm.getChart());
+
+    // Unpresses buttons
+    // game!.unpress();
 }
 export async function key(data: Buffer): Promise<void> {
-    console.log(data);
+    switch(data.toString()) {
+        case "d": {
+            game!.press(Channel.D);
+            break;
+        }
+    }
 }

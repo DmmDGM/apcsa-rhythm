@@ -55,7 +55,7 @@ export async function draw(): Promise<void> {
     await render.writeJustify(
         10,
         `FPS: ${calculatedFps.toFixed(3)} / ${engine.getFps()}`,
-        "",
+        `Frames Elapsed: ${engine.getFrames()}`,
         `Delta: ${lastDelta} ms`
     );
     await render.writeJustify(
