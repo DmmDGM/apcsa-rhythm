@@ -24,8 +24,6 @@ export async function init(): Promise<void> {
 
     // Resets window
     charts = await rhythm.fetchAll();
-    charts = [ ...charts, ...charts, ...charts, ...charts, ...charts ];
-    charts = [ ...charts, ...charts, ...charts, ...charts, ...charts ];
     scroll = [];
     position = 0;
     index = 0;
@@ -44,10 +42,10 @@ export async function update(delta: number): Promise<void> {
     calculatedFps = 1000 / delta;
 
     // Updates scroll
-    if(index < position) position = index;
-    if(index >= position + 15) position = index - 15 + 1;
+    if (index < position) position = index;
+    if (index >= position + 15) position = index - 15 + 1;
     scroll = charts.slice(position, position + 15);
-    
+
     // Updates elapsed
     elapsed += delta;
 }
@@ -60,9 +58,10 @@ export async function draw(): Promise<void> {
         "Shift + [Q]uit"
     );
     await render.writeLeft(3, chalk.cyanBright("-".repeat(render.renderWidth)));
+    await render.clearLine(4);
 
     // Prints scroll
-    for(let i = 0; i < scroll.length; i++) {
+    for (let i = 0; i < scroll.length; i++) {
         const chart = scroll[i]!;
         const selected = index - position === i;
         const number = position + i + 1;
@@ -70,14 +69,20 @@ export async function draw(): Promise<void> {
         const style = selected ?
             (blink ? chalk.cyanBright : chalk.yellowBright) :
             chalk.white;
+        const stars = ("★ ".repeat(chart.getDifficulty()) + "☆ ".repeat(5 - chart.getDifficulty()));
         await render.writeLeft(
             5 + i,
-            style(`${selected ? "> " : ""}${number}. ${chart.getName()}`)
+            style(`${selected ? "> " : ""}${number}. ${chart.getName()} (${stars})`)
         );
+    }
+    for(let i = scroll.length; i < 15; i++) {
+        await render.clearLine(5 + i);
     }
 
     // Prints footer
     const chart = charts[index]!;
+    await render.clearLine(20);
+    await render.clearLine(21);
     await render.writeLeft(22, chalk.cyanBright("-".repeat(render.renderWidth)));
     await render.writeJustify(
         23,
@@ -85,11 +90,11 @@ export async function draw(): Promise<void> {
         "",
         `| ${charts.length} charts loaded! (${calculatedFps.toFixed(1)} / ${engine.getFps()} fps)`);
     await render.writeLeft(24, chalk.cyanBright("-".repeat(render.renderWidth)));
-    
+
 }
 export async function key(data: Buffer): Promise<void> {
     // Handles key
-    switch(data.toString()) {
+    switch (data.toString()) {
         case "\x1b\x5b\x31\x3b\x32\x41": {
             index = Math.max(index - 10, 0);
             break;
@@ -99,8 +104,8 @@ export async function key(data: Buffer): Promise<void> {
             break;
         }
         case "\x1b\x5b\x42": {
-           index = Math.min(index + 1, charts.length - 1);
-           break;
+            index = Math.min(index + 1, charts.length - 1);
+            break;
         }
         case "\x1b\x5b\x31\x3b\x32\x42": {
             index = Math.min(index + 10, charts.length - 1);

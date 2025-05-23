@@ -1,33 +1,70 @@
 {
     "description": "Teaching you the basics!",
     "difficulty": 0,
-    "length": 10000,
+    "length": 55000,
     "name": "Tutorial",
     "table": [
         [
-            11000
+            11000,
+            16500,
+            26000,
+            26500,
+            27000,
+            38000,
+            38500
         ],
         [
-            11250
+            11500,
+            16000,
+            29000,
+            29500,
+            30000,
+            39000,
+            39500
         ],
         [
-            11500
+            12000,
+            15500,
+            40000,
+            40500
         ],
         [
-            11750
+            12500,
+            15000,
+            41000,
+            41500
         ],
         [
-            12000
+            13000,
+            14500,
+            32000,
+            32500,
+            33000,
+            42000,
+            42500
         ],
         [
-            12250
+            13500,
+            14000,
+            35000,
+            35500,
+            36000,
+            43000,
+            43500
         ]
     ],
     "texts": [
         [ 1000, "Welcome to Term-a-Rhythm!" ],
-        [ 3000, "The rules of this game is simple." ],
+        [ 3000, "The rules of this game are simple." ],
         [ 5000, "Click on the corresponding buttons when the notes fall on the line!" ],
         [ 8000, "Try it out!" ],
-        [ 11000, "" ]
+        [ 11000, "" ],
+        [ 20000, "Ey, see. You did great." ],
+        [ 22000, "Here comes some more." ],
+        [ 24000, "See if you can handle these." ],
+        [ 26000, "" ],
+        [ 46000, "And that's it!" ],
+        [ 48000, "I hope you have fun in Term-a-Rhythm!" ],
+        [ 50000, "Good luck! <3" ]
     ]
 }

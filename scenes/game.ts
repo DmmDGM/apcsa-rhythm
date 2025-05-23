@@ -54,6 +54,10 @@ class Game {
     private lastClicked: number;
     private lastDelta: number;
     private lastText: string;
+    private missedNotes: number;
+    private okNotes: number;
+    private goodNotes: number;
+    private perfectNotes: number;
 
     // Defines constructor
     constructor(chart: rhythm.Chart) {
@@ -66,6 +70,10 @@ class Game {
         this.lastClicked = Number.MIN_SAFE_INTEGER;
         this.lastDelta = 0;
         this.lastText = "";
+        this.missedNotes = 0;
+        this.okNotes = 0;
+        this.goodNotes = 0;
+        this.perfectNotes = 0;
     }
 
     // Defines methods
@@ -131,6 +139,7 @@ class Game {
             }
         }
         if(missed === 0) return false;
+        this.missedNotes += missed;
 
         // Subtracts score
         this.score = Math.max(this.score - missed * 100, 0);
@@ -149,6 +158,12 @@ class Game {
         const delta = note.getTime() - this.elapsed;
         if(delta > 1000) return false;
         lane.shift();
+        if(this.lastDelta < -100) this.okNotes++;
+        else if(this.lastDelta < -50) this.goodNotes++;
+        else if(this.lastDelta <= 50) this.perfectNotes++;
+        else if(this.lastDelta <= 100) this.goodNotes++; 
+        else if(this.lastDelta <= 500) this.okNotes++;
+        else this.missedNotes++;
 
         // Adds score
         this.score += Math.round(1000 / Math.log(Math.abs(delta) + 1));
@@ -177,13 +192,21 @@ class Game {
         else if(this.lastDelta <= 500) return chalk.yellowBright(`Early! (${this.lastDelta} ms)`);
         else return chalk.redBright(`Too early! (${this.lastDelta} ms)`);
     }
+    getElapsed(): number {
+        // Returns elapsed
+        return this.elapsed;
+    }
     getLastDelta(): number {
         // Returns last delta
         return this.lastDelta;
     }
+    getLength(): number {
+        // Returns length
+        return this.chart.getLength();
+    }
     getName(): string {
         // Returns name
-        return this.getChart().getName();
+        return this.chart.getName();
     }
     getScore(): number {
         // Returns score
@@ -199,8 +222,8 @@ class Game {
         }
 
         // Formats time
-        const elapsed = formatTime(Math.max(this.elapsed, 0));
-        const total = formatTime(this.getChart().getLength());
+        const elapsed = formatTime(Math.min(Math.max(this.elapsed, 0), this.chart.getLength()));
+        const total = formatTime(this.chart.getLength());
         return `${elapsed} / ${total}`;
     }
     getText(): string {
@@ -208,11 +231,24 @@ class Game {
         if(this.elapsed < -2000) return "Ready?";
         else if(this.elapsed < -1000) return "Set!";
         else if(this.elapsed < 0) return "GO!";
+        else if(this.hasEnded()) {
+            if(this.elapsed < this.chart.getLength() + 3000) return "Congratulations!";
+            return [
+                `Perfect: ${this.perfectNotes}`,
+                `Good: ${this.goodNotes}`,
+                `OK: ${this.okNotes}`,
+                `Missed: ${this.missedNotes}`
+            ].join(" | ");
+        }
         
         // Returns texts
         while(this.texts.length !== 0 && this.texts[0]!.getTime() < this.elapsed)
             this.lastText = this.texts.shift()!.getContent();
         return this.lastText;
+    }
+    hasEnded(): boolean {
+        // Returns status
+        return this.elapsed > this.chart.getLength();
     }
     press(channel: Channel): void {
         // Clicks note
@@ -250,6 +286,9 @@ export async function update(delta: number): Promise<void> {
 
     // Elapses delta
     game.elapseDelta(delta);
+
+    // Sets up auto return
+    if(game.getElapsed() >= game.getLength() + 10000) await context.setScene("menu");
 }
 export async function draw(): Promise<void> {
     // Prints header
@@ -270,12 +309,16 @@ export async function draw(): Promise<void> {
         `Score: ${game.getScore()}`
     )   
 
-    // Prints board
+    // Prints text
     await render.writeCenter(4, game.getText());
+
+    // Prints board
     const board = game.buildBoard();
     for(let i = 0; i < board.length; i++) {
         await render.writeCenter(5 + i, board[i]!);
     }
+    
+    // Prints comments
     await render.writeCenter(24, game.getComment());
     await render.clearHere();
 }
