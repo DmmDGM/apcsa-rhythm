@@ -5,22 +5,29 @@
     "name": "Tutorial",
     "table": [
         [
-            1000
+            11000
         ],
         [
-            1250
+            11250
         ],
         [
-            1500
+            11500
         ],
         [
-            1750
+            11750
         ],
         [
-            2000
+            12000
         ],
         [
-            2250
+            12250
         ]
+    ],
+    "texts": [
+        [ 1000, "Welcome to Term-a-Rhythm!" ],
+        [ 3000, "The rules of this game is simple." ],
+        [ 5000, "Click on the corresponding buttons when the notes fall on the line!" ],
+        [ 8000, "Try it out!" ],
+        [ 11000, "" ]
     ]
 }
