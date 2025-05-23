@@ -34,8 +34,8 @@ export async function init(): Promise<void> {
 }
 export async function update(delta: number): Promise<void> {
     // Updates refresh
-    const crosses = (time: number): boolean => elapsed < time && elapsed + delta >= time;
-    refresh = crosses(3000) || crosses(4000);
+    const crosses = (time: number): boolean => elapsed <= time && elapsed + delta >= time;
+    refresh = crosses(3000) || crosses(4000) || crosses(8000);
 
     // Updates elapsed
     elapsed += delta;
