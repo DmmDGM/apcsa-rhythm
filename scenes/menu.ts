@@ -16,7 +16,6 @@ let index = 0;
 let elapsed = 0;
 
 // Defines statistics
-let lastDelta = 0;
 let calculatedFps = 0;
 
 // Defines scene
@@ -36,7 +35,6 @@ export async function init(): Promise<void> {
     elapsed = 0;
 
     // Resets statistics
-    lastDelta = 0;
     calculatedFps = 0;
 
     // Clears screen
@@ -44,7 +42,6 @@ export async function init(): Promise<void> {
 }
 export async function update(delta: number): Promise<void> {
     // Updates statistics
-    lastDelta = delta;
     calculatedFps = 1000 / delta;
 
     // Updates scroll
