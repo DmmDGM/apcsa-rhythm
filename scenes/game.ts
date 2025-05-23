@@ -16,6 +16,9 @@ class Game {
 
     // Defines constructor
     constructor(chart: rhythm.Chart) {
+        // Updates fps
+        engine.setFps(30);
+
         // Initializes fields
         this.chart = chart;
         this.table = chart.getLanes().map((lane) => [ ...lane.getNotes() ]);
@@ -32,8 +35,10 @@ class Game {
             const label = labels[channel]!;
             const space = new Array(92).fill(" ");
             space[12] = chalk.bgGreenBright(" ");
-            const track = 
+            // const track = 
             // "J || 92 ||"  
+        }
+        return [];
     }
     clickMissed(): boolean {
         // Clicks and removes missed
@@ -66,14 +71,25 @@ class Game {
     }
 }
 
+// Defines statistics
+let calculatedFps = 0;
+
 // Defines scene
 export async function init(): Promise<void> {
     // Clears screen
     await render.clearScreen();
+
+    // Resets statistics
+    calculatedFps = 0;
+}
+export async function update(delta: number): Promise<void> {
+    // Updates statistics
+    calculatedFps = 1000 / delta;
 }
 export async function draw(): Promise<void> {
     await render.clearScreen();
-    console.log(rhythm.getChart());
+    await render.writeLeft(1, `${calculatedFps}`);
+    // console.log(rhythm.getChart());
 }
 export async function key(data: Buffer): Promise<void> {
     console.log(data);
