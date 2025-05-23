@@ -54,7 +54,7 @@ class Game {
             const style = styles[channel]!;
 
             // Builds track
-            const button = (this.pressed & 1 << channel) === 0 ? paint("a") : style("a");
+            const button = (this.pressed & 1 << channel) === 0 ? ((this.pressed) + " " + (1 << channel) + " " + (this.pressed & 1 << channel)) : style("a");
             const spaces = new Array(92).fill(" ");
             spaces[12] = dash;
             for(let i = 0; i < lane.length; i++) {
@@ -180,7 +180,7 @@ export async function update(delta: number): Promise<void> {
 export async function draw(): Promise<void> {
     // await render.clearScreen();
     await render.writeLeft(1, `${calculatedFps}`);
-    const board = new Game(rhythm.getChart()).buildBoard();
+    const board = game!.buildBoard();
     for(let i = 0; i < board.length; i++) {
         await render.writeCenter(2 + i, board[i]!);
     }
@@ -191,6 +191,10 @@ export async function draw(): Promise<void> {
 }
 export async function key(data: Buffer): Promise<void> {
     switch(data.toString()) {
+        case "s": {
+            game!.press(Channel.S);
+            break;
+        }
         case "d": {
             game!.press(Channel.D);
             break;
