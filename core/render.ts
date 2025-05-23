@@ -31,6 +31,7 @@ export async function clearUp(rows: number): Promise<void> {
 // Defines write methods
 export async function writeCenter(rows: number, text: string): Promise<void> {
     // Writes center-aligned text
+    if(text.length === 0) return;
     const textWidth = Bun.stringWidth(text);
     const columns = Math.floor((renderWidth - textWidth) / 2) + 1;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
@@ -38,6 +39,7 @@ export async function writeCenter(rows: number, text: string): Promise<void> {
 }
 export async function writeHere(text: string): Promise<void> {
     // Writes text
+    if(text.length === 0) return;
     await Bun.stdout.write(text);
 }
 export async function writeJustify(
@@ -47,33 +49,42 @@ export async function writeJustify(
     rightText: string
 ): Promise<void> {
     // Writes left-aligned text
-    await Bun.stdout.write(`\x1b[${rows};1H`);
-    await Bun.stdout.write(`${leftText}\x1b[0K`);
+    if(leftText.length !== 0) {
+        await Bun.stdout.write(`\x1b[${rows};1H`);
+        await Bun.stdout.write(`${leftText}\x1b[0K`);
+    }
 
     // Writes right-aligned text
-    const rightWidth = Bun.stringWidth(rightText);
-    const rightColumns = renderWidth - rightWidth + 1;
-    await Bun.stdout.write(`\x1b[${rows};${rightColumns}H`);
-    await Bun.stdout.write(rightText);
+    if(rightText.length !== 0) {
+        const rightWidth = Bun.stringWidth(rightText);
+        const rightColumns = renderWidth - rightWidth + 1;
+        await Bun.stdout.write(`\x1b[${rows};${rightColumns}H`);
+        await Bun.stdout.write(rightText);
+    }
 
     // Writes center-aligned text
-    const centerWidth = Bun.stringWidth(centerText);
-    const centerColumns = Math.floor((renderWidth - centerWidth) / 2) + 1;
-    await Bun.stdout.write(`\x1b[${rows};${centerColumns}H`);
-    await Bun.stdout.write(centerText);
+    if(centerText.length !== 0) {
+        const centerWidth = Bun.stringWidth(centerText);
+        const centerColumns = Math.floor((renderWidth - centerWidth) / 2) + 1;
+        await Bun.stdout.write(`\x1b[${rows};${centerColumns}H`);
+        await Bun.stdout.write(centerText);
+    }
 }
 export async function writeLine(rows: number, columns: number, text: string): Promise<void> {
     // Writes line
+    if(text.length === 0) return;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(`\x1b[1K${text}\x1b[0K`);
 }
 export async function writeLeft(rows: number, text: string): Promise<void> {
     // Writes left-aligned text
+    if(text.length === 0) return;
     await Bun.stdout.write(`\x1b[${rows};1H`);
     await Bun.stdout.write(`${text}\x1b[0K`);
 }
 export async function writeRight(rows: number, text: string): Promise<void> {
     // Writes right-aligned text
+    if(text.length === 0) return;
     const textWidth = Bun.stringWidth(text);
     const columns = renderWidth - textWidth + 1;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
@@ -81,6 +92,7 @@ export async function writeRight(rows: number, text: string): Promise<void> {
 }
 export async function writeText(rows: number, columns: number, text: string): Promise<void> {
     // Writes at position
+    if(text.length === 0) return;
     await Bun.stdout.write(`\x1b[${rows};${columns}H`);
     await Bun.stdout.write(text);
 }

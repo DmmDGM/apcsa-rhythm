@@ -87,7 +87,7 @@ export async function draw(): Promise<void> {
         );
         await render.writeCenter(
             title.length + 14,
-            chalk.gray("HINT: You can exit the game at any time by pressing alt (or options) + shift + q!")
+            chalk.gray("HINT: You can exit the game at any time by pressing alt (or option) + shift + q!")
         );
     }
 

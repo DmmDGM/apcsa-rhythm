@@ -38,5 +38,7 @@ export async function draw(): Promise<void> {
     await render.clearLine(6);
     await render.writeCenter(7, "Resizing during gameplay may result in corrupt rendering.");
     await render.writeCenter(8, "The game will proceed once the minimum terminal size is met.");
+    await render.writeCenter(9, "Users on Windows or MacOS may notice that the terminal size does not update live.");
+    await render.writeCenter(10, "Please manually quit the game using alt (option) + shift + q and restart.");
     await render.clearHere();
 }
