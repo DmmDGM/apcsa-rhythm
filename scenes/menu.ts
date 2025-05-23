@@ -2,7 +2,6 @@
 import chalk from "chalk";
 import * as context from "../core/context";
 import * as engine from "../core/engine";
-import * as project from "../core/project";
 import * as render from "../core/render";
 import * as rhythm from "../core/rhythm";
 
@@ -31,11 +30,11 @@ export async function init(): Promise<void> {
     position = 0;
     index = 0;
 
-    // Resets elapsed
-    elapsed = 0;
-
     // Resets statistics
     calculatedFps = 0;
+
+    // Resets elapsed
+    elapsed = 0;
 
     // Clears screen
     await render.clearScreen();
@@ -55,7 +54,11 @@ export async function update(delta: number): Promise<void> {
 export async function draw(): Promise<void> {
     // Prints header
     await render.writeLeft(1, chalk.cyanBright("-".repeat(render.renderWidth)));
-    await render.writeCenter(2, chalk.cyanBright("Choose a Chart to Play!"));
+    await render.writeJustify(2,
+        "Choose a Chart to Play!",
+        "",
+        "Shift + [Q]uit"
+    );
     await render.writeLeft(3, chalk.cyanBright("-".repeat(render.renderWidth)));
 
     // Prints scroll
@@ -69,7 +72,7 @@ export async function draw(): Promise<void> {
             chalk.white;
         await render.writeLeft(
             5 + i,
-            style(`${number}. ${chart.getName()} ${selected ? "<--" : ""}`)
+            style(`${selected ? "> " : ""}${number}. ${chart.getName()}`)
         );
     }
 
@@ -107,6 +110,10 @@ export async function key(data: Buffer): Promise<void> {
             const chart = charts[index]!;
             rhythm.changeChart(chart);
             await context.setScene("game");
+            break;
+        }
+        case "Q": {
+            await context.setScene("title");
             break;
         }
     }

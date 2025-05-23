@@ -3,7 +3,7 @@ import * as context from "./context";
 import * as except from "./except";
 
 // Defines fps handlers
-let fps: number = 10;
+export let fps: number = 10;
 export function getFps(): number {
     // Returns fps
     return fps;
@@ -14,14 +14,14 @@ export function setFps(rate: number): void {
 }
 
 // Defines tick handler
-let tick = Date.now();
+export let tick = Date.now();
 export function getTick(): number {
     // Returns number
     return tick;
 }
 
 // Defines frames handlers
-let frames: number = 0;
+export let frames: number = 0;
 export function getFrames(): number {
     // Returns frames
     return frames;

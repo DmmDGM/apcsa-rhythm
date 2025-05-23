@@ -63,6 +63,7 @@ export class Lane {
         // Populates notes
         for(let i = 0; i < times.length; i++) {
             const note = new Note(times[i]!);
+            this.notes.push(note);
         }
         this.notes.sort((left, right) => left.getTime() - right.getTime());
     }
@@ -126,6 +127,10 @@ export class Chart {
         // Returns lanes
         return this.lanes;
     }
+    getLength(): number {
+        // Returns length
+        return this.length;
+    }
     getNotes(): readonly Note[] {
         // Returns notes
         return this.notes;
@@ -137,7 +142,7 @@ export class Chart {
 }
 
 // Defines handlers
-let chart: Chart | null = null;
+export let chart: Chart | null = null;
 export const charts: Map<string, Chart> = new Map();
 export async function fetchChart(name: string): Promise<Chart> {
     // Fetches data

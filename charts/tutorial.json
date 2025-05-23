@@ -1,25 +1,26 @@
 {
     "description": "Teaching you the basics!",
     "difficulty": 0,
+    "length": 10000,
     "name": "Tutorial",
     "table": [
         [
-
+            1000
         ],
         [
-
+            1250
         ],
         [
-            
+            1500
         ],
         [
-
+            1750
         ],
         [
-
+            2000
         ],
         [
-
+            2250
         ]
     ]
 }

@@ -14,7 +14,7 @@ const title = [
     "   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝      ╚═╝  ╚═╝      ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝"
 ];
 
-// Defines flags
+// Defines frame
 let elapsed: number = 0;
 let index: number = 0;
 let refresh: boolean = false;
@@ -24,7 +24,7 @@ export async function init(): Promise<void> {
     // Updates fps
     engine.setFps(10);
 
-    // Resets flags
+    // Resets frame
     elapsed = 0;
     index = 0;
     refresh = false;

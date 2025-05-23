@@ -3,7 +3,7 @@ import nodePath from "node:path";
 import * as except from "./except";
 import * as project from "./project";
 
-// Defines structure
+// Defines scene handlers
 export type Scene = {
     init: () => void | Promise<void>;
     update: (delta: number) => void | Promise<void>;
@@ -11,11 +11,9 @@ export type Scene = {
     key: (data: Buffer) => void | Promise<void>;
     fix: (exception: except.Exception) => void | Promise<void>;
 };
-
-// Defines handlers
-let scene: Scene | null = null;
+export let scene: Scene | null = null;
 export const scenes: Map<string, Scene> = new Map();
-async function fetchScene(name: string): Promise<Scene> {
+export async function fetchScene(name: string): Promise<Scene> {
     // Fetches scene
     try {
         // Checks cache
@@ -57,4 +55,19 @@ export async function changeScene(updated: Scene): Promise<void> {
     // Updates scene
     scene = updated;
     await scene.init();
+}
+
+// Defines state handlers
+export const states: Set<string> = new Set();
+export function testState(state: string): boolean {
+    // Tests state
+    return states.has(state);
+}
+export function addState(state: string): void {
+    // Adds state
+    states.add(state);
+}
+export function removeState(state: string): void {
+    // Removes state
+    states.delete(state);
 }

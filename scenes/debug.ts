@@ -72,7 +72,20 @@ export async function draw(): Promise<void> {
     await render.writeCenter(render.renderHeight, "--- BOTTOM OF RENDER ---");
     await render.clearHere();
 }
-export async function key(): Promise<void> {
+export async function key(data: Buffer): Promise<void> {
     // Exits debug mode
-    await context.setScene("init");
+    switch(data.toString()) {
+        case "m": {
+            // await context.setScene("memory");
+            break;
+        }
+        case "c": {
+            // await context.setScene("charts");
+            break;
+        }
+        default: {
+            await context.setScene("init");
+            break;
+        }
+    }
 }
