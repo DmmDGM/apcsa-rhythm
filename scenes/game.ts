@@ -166,7 +166,7 @@ class Game {
         else this.missedNotes++;
 
         // Adds score
-        this.score += Math.round(1000 / Math.log(Math.abs(delta) + 1));
+        this.score += Math.round(1000 / Math.log(Math.abs(delta) + 2));
 
         // Updates last elapsed
         this.lastClicked = this.elapsed;
