@@ -8,7 +8,7 @@ const output = process.argv[3];
 if(typeof output === "undefined") throw new Error("No output file was specified");
 const file = Bun.file(filepath);
 const map = await file.text();
-const [ header, ...body ] = (map + "\n").split("\n");
+const [ header, ...body ] = (map + "\n").split("\n").map((line) => line.trim());
 
 // Parses data
 enum Channel { S, D, F, J, K, L }
@@ -56,7 +56,6 @@ for(let i = 0; i < body.length; i++) {
     if(!notes.includes("=") && !notes.includes("")) {
         for(let j = 0; j < notes.length; j++) {
             const note = notes[j]!;
-            console.log(notes);
             lanes[labels[note as keyof typeof labels]].push(elapsed);
         }
     }
@@ -87,3 +86,4 @@ const chart = {
 
 // Writes file
 Bun.write(output, JSON.stringify(chart, null, 4));
+console.log(`Done! ${filepath} -> ${output}`);
