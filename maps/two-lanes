@@ -1,4 +1,4 @@
-# Two Lanes | 1 | Only F's and J's!
+# Two Lanes | 2 | Only F's and J's!
 ---
 = | This song only requires you to press the F and J keys!
 ---
@@ -43,6 +43,7 @@ j
 
 ---
 ---
+---
 f
 
 f
@@ -61,6 +62,7 @@ j
 j
 
 ---
+---
 f
 
 f
@@ -69,6 +71,25 @@ j
 
 j
 
+---
+f
+
+j
+
+f
+
+j
+
+---
+f
+
+f
+
+j
+
+f
+
+---
 ---
 j
 
@@ -79,33 +100,84 @@ f
 f
 
 ---
-f
 j
+
 f
+
 j
+
 f
+
+---
 j
+
+j
+
 f
+
 j
+
 ---
 ---
-f
-j
-f
-j
-f
-j
-f
-j
 ---
+f j
 
+f j
 
-
-
-
+f j
 
 f j
 
 ---
 ---
+---
+f
+
+
+j
+f
+
+j
+
+---
+---
+j
+
+
+f
+j
+
+f
+
+---
+---
+f
+
 f j
+
+j
+
+j f
+
+---
+---
+j
+
+f j
+
+f
+
+f j
+
+---
+---
+---
+f j
+
+
+
+f j
+
+
+
+---
